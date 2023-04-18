@@ -42,5 +42,5 @@ Exploring a sales dataset and generating various analytics and insights from cus
   - What is the distribution of RFM segmentation across our customer base?
   
 4. Finished products:
-- SQL MS SSMS Queries (uploaded file)
+- SQL MS SSMS Queries (Analytics included) (uploaded file)
 - Tableau Public Sales Dashboard (uploaded file)
