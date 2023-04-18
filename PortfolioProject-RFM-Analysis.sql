@@ -32,8 +32,8 @@ ORDER BY 2 DESC
 	-- to explain why Revenue in 2005 is much smaller than in 2004
 	SELECT DISTINCT MONTH_ID
 	FROM dbo.sales_data_sample
-	WHERE YEAR_ID = 2005 -- change the year to see the rest
-	-- They have operated 5 months in 2005 and full year in 2003 and 2004
+	WHERE YEAR_ID = 2005 --> change the year to see the rest
+	--> They have operated 5 months in 2005 and full year in 2003 and 2004
 
 
 -- Grouping sales by DealSize
@@ -51,9 +51,9 @@ SELECT
 	COUNT(ORDERNUMBER) AS FREQUENCY,
 	SUM(SALES) AS REVENUE
 FROM dbo.sales_data_sample
-WHERE YEAR_ID = 2004 -- change the year to see the rest
+WHERE YEAR_ID = 2004 --> change the year to see the rest
 GROUP BY MONTH_ID
-ORDER BY 3 DESC -- November seems to be the best month for sales
+ORDER BY 3 DESC --> November seems to be the best month for sales
 
 -- Which product was sell the most the in best month (November)?
 SELECT
@@ -62,7 +62,7 @@ SELECT
 	COUNT(ORDERNUMBER) AS FREQUENCY,
 	SUM(SALES) AS REVENUE
 FROM dbo.sales_data_sample
-WHERE YEAR_ID = 2004 AND MONTH_ID = 11 -- change the year to see the rest
+WHERE YEAR_ID = 2004 AND MONTH_ID = 11 --> change the year to see the rest
 GROUP BY MONTH_ID, PRODUCTLINE
 ORDER BY 4 DESC
 
@@ -93,7 +93,7 @@ rfm_calc AS
 		NTILE(3) OVER (ORDER BY rfm.RECENCY DESC) recency_rank,
 		NTILE(3) OVER (ORDER BY rfm.FREQUENCY) frequency_rank,
 		NTILE(3) OVER (ORDER BY rfm.AVG_Monetary_value) monetary_rank
-		-- 3 is the highest rfm point and 1 is the lowest one
+		--> 3 is the highest rfm point and 1 is the lowest one
 	FROM rfm 
 )
 
@@ -107,15 +107,42 @@ FROM rfm_calc
 SELECT *
 FROM #rfm
 
+SELECT *
+FROM #rfm
+WHERE recency_rank >= 2 AND frequency_rank >= 2 AND monetary_rank >= 2
+ORDER BY rfm_score DESC
+--> There are 30/92 customers who have rfm_score >= 6 (9 is the maximum point) and rencecy_rank, frequency_rank and monetary_rank >= 2 (3 is max)
+
+
 -- Who are the top 10% of our customers based on their overall RFM score (sum of recency, frequency and monetary)?
 SELECT TOP 10 PERCENT
 	CUSTOMERNAME,
 	RECENCY,
 	FREQUENCY,
-	Monetary_value,
+	ROUND(Monetary_value,1) AS MONETARY_VAL,
+	recency_rank,
+	frequency_rank,
+	monetary_rank,
 	rfm_score
 FROM #rfm
 ORDER BY rfm_score DESC
+--> here is the result:
+/*
+CUSTOMERNAME			RECENCY	FREQUENCY	MONETARY_VAL	recency_rank	frequency_rank	monetary_rank	rfm_score
+Salzburg Collectables		14	40		149798.6	3		3		3		9
+Tokyo Collectables, Ltd		39	32		120562.7	3		3		3		9
+Diecast Classics Inc.		1	31		122138.1	3		3		3		9
+The Sharp Gifts Warehouse	39	40		160010.3	3		3		3		9
+Dragon Souveniers, Ltd.		90	43		172989.7	3		3		3		9
+Danish Wholesale Imports	46	36		145041.6	3		3		3		9
+UK Collectables, Ltd.		53	29		118008.3	3		2		3		8
+Gift Depot Inc.			26	25		101894.8	3		2		3		8
+Muscle Machine Inc		181	48		197736.9	2		3		3		8
+Online Diecast Creations Co.	208	34		131685.3	2		3		3		8
+*/
+--> We can see that there are 7/10 customers who bought our goods less than 90 days ago (recency <90), 
+-- so that the other 3 customers may are wholesale customer (with monetary_rank = 3)
+
 
 -- Classify customers into RFM segmentation
 SELECT 
@@ -132,6 +159,7 @@ SELECT
 		ELSE 'Lost custommer'
 		END AS rfm_segment
 FROM #rfm
+
 
 -- What is the distribution of RFM segmentation across our customer base?
 SELECT
@@ -155,6 +183,18 @@ FROM (
 ) AS rfm_rank
 GROUP BY rfm_segment
 ORDER BY 2 DESC
-
-
+-- Here is the result:
+/*
+rfm_segment			count_customers
+Lost custommer			22
+Potential churners		22
+VIP but churning/churned	18
+VIP				15
+Normal				12
+VIP, Wholesale customer		3
+*/
+--> We can see that customers are classified as 'Lost customer' or 'Potential churners' that account for the largest percentage.
+-- That means we have problem in customer retention policies and advertising/marketing programs or something else.
+-- One thing that positive in the analytic is the percentage of customers who are classifed as 'VIP' or 'VIP, Wholesale customer' is nearly 20%
+-- but we have to change policies or plan new marketing programs to make it better.
 
