@@ -1,12 +1,11 @@
 # SQL-Toys-Sales-RFM-Analysis-Project
-Exploring a sales dataset and generating various analytics and insights from customers' past purchase behavior.
+Exploring a sales dataset and generating various analytics (RFM) and insights from customers' past purchase behavior.
 
 1. About project
 - RFM analysis is a data-driven technique that uses Recency, Frequency, and Monetary value to segment customers and gain insights into their buying behavior. It helps businesses identify opportunities for targeted marketing, improved customer retention, and increased sales.
 - Data Source: https://github.com/AllThingsDataWithAngelina/DataSource/blob/main/sales_data_sample.csv
 - Technologies used: 
   - MS SQL Server Management
-  - Tableau Public
 
 2. Project Planning & Aim Grid
 - Main purposes:
@@ -25,7 +24,6 @@ Exploring a sales dataset and generating various analytics and insights from cus
   - Step 2: Import data to SSMS
   - Step 3: Perform Sales analysis
   - Step 4: Perform RFM analysis
-  - Step 5: Use Tableau Public to make Sales dashboard
   
 3. Problem statements:
 - Sales Analysis:
@@ -43,4 +41,3 @@ Exploring a sales dataset and generating various analytics and insights from cus
   
 4. Finished products:
 - SQL MS SSMS Queries (Analytics included) (uploaded file)
-- Tableau Public Sales Dashboard (uploaded file)
